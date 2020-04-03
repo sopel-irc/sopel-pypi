@@ -91,10 +91,16 @@ def say_info(bot, package, version, commanded=False):
         if commanded:
             bot.say("Sorry, there was an error accessing PyPI. Please try again later.")
         return
-    bot.say("[PyPI] " + format_pypi_info(data), max_messages=2)
+
+    message = format_pypi_info(data)
+    if commanded:
+        # always use specific release so link targets won't change when clicked in old logs
+        message += " | {}".format(data['info']['release_url'])
+
+    bot.say("[PyPI] " + message, max_messages=2)
 
 
-@module.url(r'https?:\/\/pypi\.org\/p(?:roject)?\/(\w+)(?:\/([\w\d\.\-]+))?\/?')
+@module.url(r'https?:\/\/pypi\.org\/p(?:roject)?\/([\w\-\.]+)(?:\/([\w\d\.\-]+))?\/?')
 def pypi_link(bot, trigger, match):
     """Show information about a PyPI link in the chat."""
     package = match.group(1)
