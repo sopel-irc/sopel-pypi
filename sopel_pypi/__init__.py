@@ -6,6 +6,8 @@ A Sopel plugin to show information about linked PyPI Packages.
 from __future__ import unicode_literals, absolute_import, division, print_function
 
 from datetime import datetime
+import enum
+import xmlrpc.client
 
 import requests
 
@@ -21,6 +23,11 @@ class PyPIError(Exception):
 
 class NoSuchVersionError(PyPIError):
     pass
+
+
+class ReturnCode(enum.Enum):
+    FAILED = enum.auto()
+    NOT_FOUND = enum.auto()
 
 
 def get_pypi_info(package, version):
@@ -79,18 +86,24 @@ def format_pypi_info(data):
     )
 
 
+def search_pypi(query):
+    """Query PyPI's XML-RPC API for relevant packages."""
+    # Making the XML-RPC client a global breaks Sopel's plugin loading;
+    # see https://github.com/sopel-irc/sopel/issues/1931
+    # Using bot.memory would require an extra `bot` param here.
+    # Just take the slight perf hit of creating the object every time.
+    pypi = xmlrpc.client.ServerProxy('https://pypi.org/pypi')
+    return pypi.search({'name': query, 'summary': query}, 'or')
+
+
 def say_info(bot, package, version, commanded=False):
     """Fetch, format, and output the package info to IRC."""
     try:
         data = get_pypi_info(package, version)
     except NoSuchVersionError as e:
-        if commanded:
-            bot.say(e.args[0])
-        return
+        return ReturnCode.NOT_FOUND, e.args[0]
     except PyPIError:
-        if commanded:
-            bot.say("Sorry, there was an error accessing PyPI. Please try again later.")
-        return
+        return ReturnCode.FAILED, "Sorry, there was an error accessing PyPI. Please try again later."
 
     message = format_pypi_info(data)
     if commanded:
@@ -117,4 +130,27 @@ def pypi_command(bot, trigger):
     package = trigger.group(3)
     version = trigger.group(4)
 
-    say_info(bot, package, version, commanded=True)
+    if not trigger.group(5):
+        # If trigger group 5 exists, the user's input was too long for a
+        # standard package query with optional version, and we shouldn't
+        # even try to do anything but search.
+        ret, msg = say_info(bot, package, version, commanded=True)
+
+        if ret is None:
+            return  # successful output
+
+        if ret == ReturnCode.FAILED:
+            # no reason to fall back on search if PyPI appears to be down
+            bot.say(msg)
+            return
+
+        if version and ret == ReturnCode.NOT_FOUND and all(c in '1234567890.' for c in version):
+            # Don't fall back on search for NOT_FOUND with a version number
+            bot.say(msg)
+            return
+
+    # Fall back on search if the direct lookup returned no results
+    hits = search_pypi(trigger.group(2))
+    if hits:
+        package = hits[0]
+        say_info(bot, package['name'], package['version'], commanded=True)
