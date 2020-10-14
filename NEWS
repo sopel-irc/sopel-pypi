@@ -1,6 +1,15 @@
 NEWS
 ====
 
+Version 0.1.2
+-------------
+
+Fixed:
+
+* Query with no version specified now says "(any)" instead of the previous
+  direct-to-string conversion of "None"
+
+
 Version 0.1.1
 -------------
 
