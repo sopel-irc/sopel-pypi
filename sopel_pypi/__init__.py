@@ -23,7 +23,7 @@ class NoSuchVersionError(PyPIError):
     pass
 
 
-def get_pypi_info(package, version):
+def get_pypi_info(package, version=None):
     """Get the package info from PyPI, and handle network errors."""
     try:
         r = requests.get(PYPI_API_TEMPLATE.format((package + '/' + version) if version else package))
@@ -36,7 +36,7 @@ def get_pypi_info(package, version):
     if r.status_code == 404:
         raise NoSuchVersionError(
             "PyPI couldn't find {} version {}. Are you sure it exists?"
-            .format(package, version))
+            .format(package, '(any)' if version is None else version))
     try:
         r.raise_for_status()
     except requests.exceptions.HTTPError as e:
