@@ -49,10 +49,10 @@ def get_pypi_info(package, version=None):
     return data
 
 
-def get_release_date(release):
+def get_release_date(file_list):
     """Given a single release dict, figure out when it was released."""
     most_recent = None
-    for file in release:
+    for file in file_list:
         if not most_recent or file['upload_time'] > most_recent:
             most_recent = file['upload_time']
 
@@ -67,7 +67,7 @@ def format_pypi_info(data):
     version = data['info']['version']
     author = data['info']['author']
     summary = data['info']['summary']
-    release_date = get_release_date(data['releases'][version])
+    release_date = get_release_date(data['urls'])
     release_relative = tools.time.seconds_to_human(datetime.utcnow() - release_date)
 
     return template.format(
