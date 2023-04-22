@@ -65,7 +65,7 @@ def format_pypi_info(data):
 
     name = data['info']['name']
     version = data['info']['version']
-    author = data['info']['author']
+    author = data['info']['author'] or '(unknown name)'
     summary = data['info']['summary']
     release_date = get_release_date(data['urls'])
     release_relative = tools.time.seconds_to_human(datetime.utcnow() - release_date)
