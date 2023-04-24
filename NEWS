@@ -1,6 +1,14 @@
 NEWS
 ====
 
+Version 0.1.4
+-------------
+
+Fixed:
+
+* Package author field can be empty (#4)
+
+
 Version 0.1.3
 -------------
 
