@@ -100,7 +100,7 @@ def say_info(bot, package, version, commanded=False):
     bot.say("[PyPI] " + message, max_messages=2)
 
 
-@module.url(r'https?:\/\/pypi\.org\/p(?:roject)?\/([\w\-\.]+)(?:\/([\w\d\.\-]+))?\/?')
+@module.url(r'https?:\/\/pypi\.(?:org|io)\/p(?:roject)?\/([\w\-\.]+)(?:\/([\w\d\.\-]+))?\/?')
 def pypi_link(bot, trigger, match):
     """Show information about a PyPI link in the chat."""
     package = match.group(1)
