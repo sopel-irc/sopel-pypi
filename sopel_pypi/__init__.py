@@ -9,7 +9,7 @@ from datetime import datetime
 
 import requests
 
-from sopel import module, tools
+from sopel import plugin, tools
 
 
 PYPI_API_TEMPLATE = 'https://pypi.org/pypi/{}/json'
@@ -100,7 +100,7 @@ def say_info(bot, package, version, commanded=False):
     bot.say("[PyPI] " + message, max_messages=2)
 
 
-@module.url(r'https?:\/\/pypi\.org\/p(?:roject)?\/([\w\-\.]+)(?:\/([\w\d\.\-]+))?\/?')
+@plugin.url(r'https?:\/\/pypi\.org\/p(?:roject)?\/([\w\-\.]+)(?:\/([\w\d\.\-]+))?\/?')
 def pypi_link(bot, trigger, match):
     """Show information about a PyPI link in the chat."""
     package = match.group(1)
@@ -109,9 +109,9 @@ def pypi_link(bot, trigger, match):
     say_info(bot, package, version)
 
 
-@module.commands('pypi')
-@module.example('.pypi sopel 7.0.0', user_help=True)
-@module.example('.pypi sopel', user_help=True)
+@plugin.commands('pypi')
+@plugin.example('.pypi sopel 7.0.0', user_help=True)
+@plugin.example('.pypi sopel', user_help=True)
 def pypi_command(bot, trigger):
     """Show information about the given PyPI package."""
     package = trigger.group(3)
