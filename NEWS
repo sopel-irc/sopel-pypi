@@ -1,6 +1,18 @@
 NEWS
 ====
 
+Version 0.2.0
+-------------
+
+Added:
+
+* Support pypi.io links (#5)
+
+Changed:
+
+* Support upcoming Sopel 8.0 version; now requires 7.1+ (#6)
+
+
 Version 0.1.4
 -------------
 
