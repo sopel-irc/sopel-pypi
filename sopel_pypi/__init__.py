@@ -6,6 +6,8 @@ A Sopel plugin to show information about linked PyPI Packages.
 from __future__ import unicode_literals, absolute_import, division, print_function
 
 from datetime import datetime
+from email.utils import parseaddr
+import itertools
 
 import requests
 
@@ -59,13 +61,42 @@ def get_release_date(file_list):
     return datetime.strptime(most_recent, '%Y-%m-%dT%H:%M:%S')
 
 
+def merge_names_and_emails(names, emails):
+    """Format a string combining data from the ``names`` & ``emails`` fields.
+
+    Either field can be ``None``; if both are empty, the function will safely
+    fall back to ``'(unknown name)'``.
+    """
+    names_list = [a.strip() for a in names.split(', ')] if names else []
+    emails_list = []
+
+    if emails:
+        for email in emails.split(', '):
+            # trust the metadata to correctly format email entries
+            # (parseaddr() is in strict mode by default)
+            name, address = parseaddr(email)
+            if name:
+                emails_list.append(name)
+            else:
+                # if the name is empty, assume it's an email address, since
+                # Python metadata puts bare names in the field without `_email`
+                emails_list.append(address)
+
+    combined = set(itertools.chain(names_list, emails_list))
+
+    return ', '.join(combined) or '(unknown name)'
+
+
 def format_pypi_info(data):
     """Format a PyPI project data dict for output."""
     template = "{name} {version} | Author: {author} | Released {release_relative} | {summary}"
 
     name = data['info']['name']
     version = data['info']['version']
-    author = data['info']['author'] or '(unknown name)'
+    author = merge_names_and_emails(
+            data['info']['author'],
+            data['info']['author_email'],
+        )
     summary = data['info']['summary']
     release_date = get_release_date(data['urls'])
     release_relative = tools.time.seconds_to_human(datetime.utcnow() - release_date)
