@@ -8,7 +8,7 @@ Licensed under the Eiffel Forum License 2
 """
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 from email.utils import parseaddr
 import itertools
 
@@ -97,12 +97,12 @@ def format_pypi_info(data):
     name = data['info']['name']
     version = data['info']['version']
     author = merge_names_and_emails(
-            data['info']['author'],
-            data['info']['author_email'],
-        )
+        data['info']['author'],
+        data['info']['author_email'],
+    )
     summary = data['info']['summary']
     release_date = get_release_date(data['urls'])
-    release_relative = tools.time.seconds_to_human(datetime.utcnow() - release_date)
+    release_relative = tools.time.seconds_to_human(datetime.now(timezone.utc) - release_date)
 
     return template.format(
         name=name,
