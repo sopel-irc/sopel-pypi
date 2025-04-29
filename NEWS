@@ -1,60 +1,59 @@
-NEWS
-====
+## Changelog
 
-Version 0.2.0
--------------
+### 0.3.0
+
+Changed:
+* Require Sopel 8 and Python 3.8 or higher (#10)
+
+Fixed:
+* More robust "Author" name parsing (#11)
+
+Meta:
+* Various code style, structure, and package metadata housekeeping (#10)
+* Modernized changelog format
+* Automated package publishing
+
+
+### 0.2.0
 
 Added:
-
 * Support pypi.io links (#5)
 
 Changed:
-
 * Support upcoming Sopel 8.0 version; now requires 7.1+ (#6)
 
 
-Version 0.1.4
--------------
+### 0.1.4
 
 Fixed:
-
 * Package author field can be empty (#4)
 
 
-Version 0.1.3
--------------
+### 0.1.3
 
 Fixed:
-
 * PyPI API changed (#3)
 
 
-Version 0.1.2
--------------
+### 0.1.2
 
 Fixed:
-
 * Query with no version specified now says "(any)" instead of the previous
   direct-to-string conversion of "None" (#2)
 
 
-Version 0.1.1
--------------
+### 0.1.1
 
 Added:
-
 * Output link to release if invoked via command
 
 Fixed:
-
 * URL pattern not matching some allowed punctuation in package names
 
 Meta:
-
 * Corrected project description content type for PyPI
 
 
-Version 0.1.0
--------------
+### 0.1.0
 
 Initial release.
