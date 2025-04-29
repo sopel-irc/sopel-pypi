@@ -61,7 +61,9 @@ def get_release_date(file_list):
         if not most_recent or file['upload_time'] > most_recent:
             most_recent = file['upload_time']
 
-    return datetime.strptime(most_recent, '%Y-%m-%dT%H:%M:%S')
+    # I wish strptime() would allow just saying "hey, I know the offset" out of
+    # band from the input string
+    return datetime.strptime(most_recent + 'Z', '%Y-%m-%dT%H:%M:%S%z')
 
 
 def merge_names_and_emails(names, emails):
