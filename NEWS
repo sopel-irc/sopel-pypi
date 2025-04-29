@@ -1,6 +1,14 @@
 ## Changelog
 
+### 0.3.1
+
+Fixed:
+* Incorrect datetime maths
+
+
 ### 0.3.0
+
+**Note: Yanked due to bug fixed by 0.3.1.**
 
 Changed:
 * Require Sopel 8 and Python 3.8 or higher (#10)

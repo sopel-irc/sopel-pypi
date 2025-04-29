@@ -14,7 +14,7 @@ readme = { file=["README.md", "NEWS"], content-type="text/markdown" }
 
 [project]
 name = "sopel-pypi"
-version = "0.3.0"
+version = "0.3.1"
 description = "A Sopel plugin to show information about linked PyPI packages."
 
 authors = [
